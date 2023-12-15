@@ -15,13 +15,11 @@ pub fn part_one(input: &str) -> Option<u32> {
                     .map(|g| g.trim())
                     .map(|g| g.split_once(" ").expect("Missing 2 values"))
                     .map(|(n, c)| (n.parse::<i32>().expect("INT"), c))
-                    .for_each(|(n, c)| {
-                        match c {
-                            "red" => is_possible = is_possible && n <= max_red,
-                            "green" => is_possible = is_possible && n <= max_green,
-                            "blue" => is_possible = is_possible && n <= max_blue,
-                            _ => panic!("Unknown color")
-                        }
+                    .for_each(|(n, c)| match c {
+                        "red" => is_possible = is_possible && n <= max_red,
+                        "green" => is_possible = is_possible && n <= max_green,
+                        "blue" => is_possible = is_possible && n <= max_blue,
+                        _ => panic!("Unknown color"),
                     });
             }
             if is_possible {
@@ -47,17 +45,15 @@ pub fn part_two(input: &str) -> Option<u32> {
                     .map(|g| g.trim())
                     .map(|g| g.split_once(" ").expect("Missing 2 values"))
                     .map(|(n, c)| (n.parse::<i32>().expect("INT"), c))
-                    .for_each(|(n, c)| {
-                        match c {
-                            "red" => max_red = max_red.max(n),
-                            "green" => max_green = max_green.max(n),
-                            "blue" => max_blue = max_blue.max(n),
-                            _ => panic!("Unknown color")
-                        }
+                    .for_each(|(n, c)| match c {
+                        "red" => max_red = max_red.max(n),
+                        "green" => max_green = max_green.max(n),
+                        "blue" => max_blue = max_blue.max(n),
+                        _ => panic!("Unknown color"),
                     });
             }
         }
-        sum += max_red*max_green*max_blue
+        sum += max_red * max_green * max_blue
     }
     print!("Power: {}", sum);
     Some(sum as u32)

@@ -41,7 +41,10 @@ pub fn part_two(input: &str) -> Option<u32> {
                 if let Some(boxx) = boxes.get_mut(&num) {
                     if let Some(position) = boxx.into_iter().position(|b| b.contains(box_obj.0)) {
                         boxx.remove(position);
-                        boxx.insert(position, String::from(box_obj.0) + " " + &String::from(box_obj.1))
+                        boxx.insert(
+                            position,
+                            String::from(box_obj.0) + " " + &String::from(box_obj.1),
+                        )
                     } else {
                         boxx.push(String::from(box_obj.0) + " " + &String::from(box_obj.1))
                     }
@@ -66,7 +69,7 @@ pub fn part_two(input: &str) -> Option<u32> {
         if let Some(boxx) = boxes.get(&i) {
             for (idx, slot) in boxx.into_iter().enumerate() {
                 let focal_len: u64 = slot.trim().split(" ").last().unwrap().parse().unwrap();
-                sum += (i+1) as u64 * (idx+1) as u64 * focal_len
+                sum += (i + 1) as u64 * (idx + 1) as u64 * focal_len
             }
         } else {
             panic!("Cannt find box {}", i);

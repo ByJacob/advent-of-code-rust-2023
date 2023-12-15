@@ -7,16 +7,23 @@ pub fn part_one(input: &str) -> Option<u32> {
 
     for (idx, line) in input.lines().enumerate() {
         match idx {
-            0 => moves = String::from(line).chars().map(|c| if c == 'L' {0} else {1}).collect() ,
-            1 => {},
+            0 => {
+                moves = String::from(line)
+                    .chars()
+                    .map(|c| if c == 'L' { 0 } else { 1 })
+                    .collect()
+            }
+            1 => {}
             _ => {
                 if let Some((road, possible_values)) = line.split_once("=") {
-                    let cleaned_string: String = possible_values.chars()
+                    let cleaned_string: String = possible_values
+                        .chars()
                         .filter(|&c| c != '(' && c != ')')
                         .collect();
 
                     // Split the string by comma and trim whitespace
-                    let parts: Vec<String> = cleaned_string.split(',')
+                    let parts: Vec<String> = cleaned_string
+                        .split(',')
                         .map(|s| String::from(s.trim()))
                         .collect();
 
@@ -37,7 +44,7 @@ pub fn part_one(input: &str) -> Option<u32> {
             curr_stage = road.get(*m as usize).unwrap().to_string();
             if curr_stage == String::from("ZZZ") {
                 is_finish = true;
-                break
+                break;
             }
         }
     }
@@ -65,7 +72,10 @@ fn lcm(a: i64, b: i64) -> i64 {
 }
 
 fn vec_lcm(numbers: &Vec<i32>) -> i64 {
-    numbers.iter().copied().fold(1, |acc, num| lcm(acc, num as i64))
+    numbers
+        .iter()
+        .copied()
+        .fold(1, |acc, num| lcm(acc, num as i64))
 }
 pub fn part_two(input: &str) -> Option<u64> {
     let mut moves: Vec<i32> = Vec::new();
@@ -73,16 +83,23 @@ pub fn part_two(input: &str) -> Option<u64> {
 
     for (idx, line) in input.lines().enumerate() {
         match idx {
-            0 => moves = String::from(line).chars().map(|c| if c == 'L' {0} else {1}).collect() ,
-            1 => {},
+            0 => {
+                moves = String::from(line)
+                    .chars()
+                    .map(|c| if c == 'L' { 0 } else { 1 })
+                    .collect()
+            }
+            1 => {}
             _ => {
                 if let Some((road, possible_values)) = line.split_once("=") {
-                    let cleaned_string: String = possible_values.chars()
+                    let cleaned_string: String = possible_values
+                        .chars()
                         .filter(|&c| c != '(' && c != ')')
                         .collect();
 
                     // Split the string by comma and trim whitespace
-                    let parts: Vec<String> = cleaned_string.split(',')
+                    let parts: Vec<String> = cleaned_string
+                        .split(',')
                         .map(|s| String::from(s.trim()))
                         .collect();
 
@@ -102,21 +119,24 @@ pub fn part_two(input: &str) -> Option<u64> {
 
     while z_position.keys().len() < keys_ending_with_a.len() {
         count_while += 1;
-        if count_while%1000 == 0 {
+        if count_while % 1000 == 0 {
             println!("loop {}", count_while);
         }
         for m in &moves {
             let mut new_stages: Vec<&String> = vec![];
             count_moves += 1;
-            curr_stages.iter().enumerate().for_each(|(idx, &curr_stage)| {
-                let road = roads.get(&curr_stage.clone()).unwrap();
-                let found_rouad = road.get(*m as usize).unwrap();
-                new_stages.push(found_rouad);
-                if found_rouad.ends_with("Z") {
-                    let key = keys_ending_with_a.get(idx).unwrap().to_string();
-                    z_position.entry(key.clone()).or_insert(count_moves);
-                }
-            });
+            curr_stages
+                .iter()
+                .enumerate()
+                .for_each(|(idx, &curr_stage)| {
+                    let road = roads.get(&curr_stage.clone()).unwrap();
+                    let found_rouad = road.get(*m as usize).unwrap();
+                    new_stages.push(found_rouad);
+                    if found_rouad.ends_with("Z") {
+                        let key = keys_ending_with_a.get(idx).unwrap().to_string();
+                        z_position.entry(key.clone()).or_insert(count_moves);
+                    }
+                });
             curr_stages = new_stages;
         }
     }
@@ -142,7 +162,9 @@ mod tests {
 
     #[test]
     fn test_part_two() {
-        let result = part_two(&advent_of_code::template::read_file_part("examples", DAY, 2));
+        let result = part_two(&advent_of_code::template::read_file_part(
+            "examples", DAY, 2,
+        ));
         assert_eq!(result, Some(6));
     }
 }

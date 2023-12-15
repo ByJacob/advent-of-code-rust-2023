@@ -1,28 +1,95 @@
-use std::collections::HashMap;
 use indicatif::{ProgressBar, ProgressStyle};
+use std::collections::HashMap;
 advent_of_code::solution!(10);
 
 struct Directions {
     left: bool,
     up: bool,
     right: bool,
-    down: bool
+    down: bool,
 }
 
-fn define_pipes() -> HashMap<char, Directions>{
+fn define_pipes() -> HashMap<char, Directions> {
     let mut pipes_type: HashMap<char, Directions> = HashMap::new();
-    pipes_type.insert('|', Directions {left: false, up: true, right: false, down: true});
-    pipes_type.insert('-', Directions {left: true, up: false, right: true, down: false});
-    pipes_type.insert('L', Directions {left: false, up: true, right: true, down: false});
-    pipes_type.insert('J', Directions {left: true, up: true, right: false, down: false});
-    pipes_type.insert('7', Directions {left: true, up: false, right: false, down: true});
-    pipes_type.insert('F', Directions {left: false, up: false, right: true, down: true});
-    pipes_type.insert('.', Directions {left: false, up: false, right: false, down: false});
-    pipes_type.insert('S', Directions {left: true, up: true, right: true, down: true});
+    pipes_type.insert(
+        '|',
+        Directions {
+            left: false,
+            up: true,
+            right: false,
+            down: true,
+        },
+    );
+    pipes_type.insert(
+        '-',
+        Directions {
+            left: true,
+            up: false,
+            right: true,
+            down: false,
+        },
+    );
+    pipes_type.insert(
+        'L',
+        Directions {
+            left: false,
+            up: true,
+            right: true,
+            down: false,
+        },
+    );
+    pipes_type.insert(
+        'J',
+        Directions {
+            left: true,
+            up: true,
+            right: false,
+            down: false,
+        },
+    );
+    pipes_type.insert(
+        '7',
+        Directions {
+            left: true,
+            up: false,
+            right: false,
+            down: true,
+        },
+    );
+    pipes_type.insert(
+        'F',
+        Directions {
+            left: false,
+            up: false,
+            right: true,
+            down: true,
+        },
+    );
+    pipes_type.insert(
+        '.',
+        Directions {
+            left: false,
+            up: false,
+            right: false,
+            down: false,
+        },
+    );
+    pipes_type.insert(
+        'S',
+        Directions {
+            left: true,
+            up: true,
+            right: true,
+            down: true,
+        },
+    );
     pipes_type
 }
 
-fn find_char_in_multiline_string(multiline_string: &String, target_char: char) -> Option<(usize, usize)> {
+fn find_char_in_multiline_string(
+    multiline_string: &String,
+    target_char: char,
+) -> Option<(usize, usize)> {
     for (line_idx, line) in multiline_string.lines().enumerate() {
         if let Some(char_idx) = line.chars().position(|c| c == target_char) {
             return Some((line_idx, char_idx));
@@ -31,8 +98,11 @@ fn find_char_in_multiline_string(multiline_string: &String, target_char: char) -
     None
 }
 
-fn find_chars_in_multiline_string(multiline_string: &String, target_char: char) -> Option<Vec<(usize, usize)>> {
-    let mut result:Vec<(usize, usize)> = vec![];
+fn find_chars_in_multiline_string(
+    multiline_string: &String,
+    target_char: char,
+) -> Option<Vec<(usize, usize)>> {
+    let mut result: Vec<(usize, usize)> = vec![];
     for (line_idx, line) in multiline_string.lines().enumerate() {
         for (char_idx, ch) in line.chars().enumerate() {
             if ch == target_char {
@@ -90,7 +160,8 @@ pub fn part_one(input: &str) -> Option<u32> {
         curr_distance += 1;
         let mut new_objects: Vec<(usize, usize)> = vec![];
         for curr_object in &curr_objects {
-            let mut possible_positions: Vec<(usize, usize)> = get_neighbors(&file_content, curr_object);
+            let mut possible_positions: Vec<(usize, usize)> =
+                get_neighbors(&file_content, curr_object);
             let curr_x = curr_object.0;
             let curr_y = curr_object.1;
             let curr_char = get_char_at_position(&file_content, curr_x, curr_y).unwrap();
@@ -106,31 +177,26 @@ pub fn part_one(input: &str) -> Option<u32> {
                         new_objects.push((poss_x, poss_y));
                         founded_pipes.insert((poss_x, poss_y), curr_distance);
                     }
-                }
-                else if curr_x == poss_x && curr_y < poss_y {
+                } else if curr_x == poss_x && curr_y < poss_y {
                     if curr_direction.right && possible_direction.left {
                         new_objects.push((poss_x, poss_y));
                         founded_pipes.insert((poss_x, poss_y), curr_distance);
                     }
-                }
-                else if curr_y == poss_y && curr_x < poss_x {
+                } else if curr_y == poss_y && curr_x < poss_x {
                     if curr_direction.down && possible_direction.up {
                         new_objects.push((poss_x, poss_y));
                         founded_pipes.insert((poss_x, poss_y), curr_distance);
                     }
-                }
-                else if curr_y == poss_y && curr_x > poss_x {
+                } else if curr_y == poss_y && curr_x > poss_x {
                     if curr_direction.up && possible_direction.down {
                         new_objects.push((poss_x, poss_y));
                         founded_pipes.insert((poss_x, poss_y), curr_distance);
                     }
                 }
             }
-
         }
         is_next = !new_objects.is_empty();
         curr_objects = new_objects;
-
     }
     let max_distance = founded_pipes.values().max().unwrap();
     let mut sorted_vec: Vec<_> = founded_pipes.clone().into_iter().collect();
@@ -142,10 +208,10 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 fn replace_char_at_position(input_string: String, x: usize, y: usize, new_char: char) -> String {
-    let line_len = input_string.lines().nth(x).unwrap().len()+2;
+    let line_len = input_string.lines().nth(x).unwrap().len() + 2;
     let mut chars: Vec<char> = input_string.chars().collect();
 
-    if let Some(index_to_replace) = input_string.char_indices().nth(x*line_len + y) {
+    if let Some(index_to_replace) = input_string.char_indices().nth(x * line_len + y) {
         let index_to_replace = index_to_replace.0;
         chars[index_to_replace] = new_char;
     }
@@ -168,7 +234,8 @@ pub fn part_two(input: &str) -> Option<u32> {
         curr_distance += 1;
         let mut new_objects: Vec<(usize, usize)> = vec![];
         for curr_object in &curr_objects {
-            let mut possible_positions: Vec<(usize, usize)> = get_neighbors(&file_content, curr_object);
+            let mut possible_positions: Vec<(usize, usize)> =
+                get_neighbors(&file_content, curr_object);
             let curr_x = curr_object.0;
             let curr_y = curr_object.1;
             let curr_char = get_char_at_position(&file_content, curr_x, curr_y).unwrap();
@@ -184,47 +251,45 @@ pub fn part_two(input: &str) -> Option<u32> {
                         new_objects.push((poss_x, poss_y));
                         founded_pipes.insert((poss_x, poss_y), curr_distance);
                     }
-                }
-                else if curr_x == poss_x && curr_y < poss_y {
+                } else if curr_x == poss_x && curr_y < poss_y {
                     if curr_direction.right && possible_direction.left {
                         new_objects.push((poss_x, poss_y));
                         founded_pipes.insert((poss_x, poss_y), curr_distance);
                     }
-                }
-                else if curr_y == poss_y && curr_x < poss_x {
+                } else if curr_y == poss_y && curr_x < poss_x {
                     if curr_direction.down && possible_direction.up {
                         new_objects.push((poss_x, poss_y));
                         founded_pipes.insert((poss_x, poss_y), curr_distance);
                     }
-                }
-                else if curr_y == poss_y && curr_x > poss_x {
+                } else if curr_y == poss_y && curr_x > poss_x {
                     if curr_direction.up && possible_direction.down {
                         new_objects.push((poss_x, poss_y));
                         founded_pipes.insert((poss_x, poss_y), curr_distance);
                     }
                 }
             }
-
         }
         is_next = !new_objects.is_empty();
         curr_objects = new_objects;
-
     }
 
     let mut new_file_content: String = String::from("");
     let pb = ProgressBar::new(file_content.lines().count() as u64);
     pb.set_prefix("Increment data");
     // Customize the style of the progress bar
-    pb.set_style(ProgressStyle::default_bar()
-        .template("[{bar:40.cyan/blue}] {percent}% {pos}/{len} {prefix} {msg}").expect("REASON")
-        .progress_chars("##-"));
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("[{bar:40.cyan/blue}] {percent}% {pos}/{len} {prefix} {msg}")
+            .expect("REASON")
+            .progress_chars("##-"),
+    );
     for x in 0..file_content.lines().count() {
         pb.inc(1);
         let mut new_lines = vec!["".to_string(), "".to_string(), "".to_string()];
         let curr_line_len = file_content.lines().nth(x).unwrap().len();
         for y in 0..curr_line_len {
             let mut new_ch: String = format!("...\r\n...\r\n...\r\n");
-            let curr_ch = if !founded_pipes.contains_key(&(x,y)) {
+            let curr_ch = if !founded_pipes.contains_key(&(x, y)) {
                 '.'
             } else {
                 get_char_at_position(&file_content, x, y).unwrap()
@@ -254,26 +319,30 @@ pub fn part_two(input: &str) -> Option<u32> {
             new_file_content += "\r\n";
         }
     }
-    let pb = ProgressBar::new((file_content.lines().count()*file_content.lines().nth(0).unwrap().len()) as u64);
+    let pb = ProgressBar::new(
+        (file_content.lines().count() * file_content.lines().nth(0).unwrap().len()) as u64,
+    );
     pb.set_prefix("Fill first outside dots");
     // Customize the style of the progress bar
-    pb.set_style(ProgressStyle::default_bar()
-        .template("[{bar:40.cyan/blue}] {percent}% {pos}/{len} {prefix} {msg}").expect("REASON")
-        .progress_chars("##-"));
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("[{bar:40.cyan/blue}] {percent}% {pos}/{len} {prefix} {msg}")
+            .expect("REASON")
+            .progress_chars("##-"),
+    );
     let mut file_content = new_file_content;
     let mut points_to_expand: Vec<(usize, usize)> = vec![];
     for x in 0..file_content.lines().count() {
         let line_len = file_content.lines().nth(x).unwrap().len();
         for y in 0..line_len {
             pb.inc(1);
-            if (x==0 || x==file_content.lines().count()-1) || (y==0 || y==line_len-1) {
+            if (x == 0 || x == file_content.lines().count() - 1) || (y == 0 || y == line_len - 1) {
                 if let Some(ch) = get_char_at_position(&file_content, x, y) {
                     if ch == '.' {
                         file_content = replace_char_at_position(file_content, x, y, '0');
-                        points_to_expand.push((x,y));
+                        points_to_expand.push((x, y));
                     }
                 }
-
             }
         }
     }
@@ -282,13 +351,15 @@ pub fn part_two(input: &str) -> Option<u32> {
     let mut last_changes = find_chars_in_multiline_string(&file_content, '0').unwrap();
 
     while !is_finish {
-
         let mut dot_changes = 0;
         pb.set_prefix("Process dots");
         // Customize the style of the progress bar
-        pb.set_style(ProgressStyle::default_bar()
-            .template("[{bar:40.cyan/blue}] {percent}% {pos}/{len} {prefix} {msg}").expect("REASON")
-            .progress_chars("##-"));
+        pb.set_style(
+            ProgressStyle::default_bar()
+                .template("[{bar:40.cyan/blue}] {percent}% {pos}/{len} {prefix} {msg}")
+                .expect("REASON")
+                .progress_chars("##-"),
+        );
 
         let pb = ProgressBar::new(*(&last_changes.len()) as u64);
         let mut new_changes: Vec<(usize, usize)> = vec![];
@@ -305,7 +376,7 @@ pub fn part_two(input: &str) -> Option<u32> {
             }
         }
         last_changes = new_changes;
-        let curr_zeros = file_content.chars().filter(|c| c==&'0').count();
+        let curr_zeros = file_content.chars().filter(|c| c == &'0').count();
         println!("Changes dot:{}", dot_changes);
         println!("Zeros count:{}", curr_zeros);
         is_finish = dot_changes == 0;
@@ -321,7 +392,7 @@ pub fn part_two(input: &str) -> Option<u32> {
         new_file_content += &String::from("\r\n");
     }
 
-    let sum_dots = new_file_content.chars().filter(|c| c==&'.').count();
+    let sum_dots = new_file_content.chars().filter(|c| c == &'.').count();
     // println!("{}", new_file_content);
     // println!("{}", sum_dots);
     println!("{}", sum_dots);
@@ -340,19 +411,25 @@ mod tests {
 
     #[test]
     fn test_part_one_b() {
-        let result = part_one(&advent_of_code::template::read_file_part("examples", DAY, 1));
+        let result = part_one(&advent_of_code::template::read_file_part(
+            "examples", DAY, 1,
+        ));
         assert_eq!(result, Some(8));
     }
 
     #[test]
     fn test_part_two() {
-        let result = part_two(&advent_of_code::template::read_file_part("examples", DAY,2));
+        let result = part_two(&advent_of_code::template::read_file_part(
+            "examples", DAY, 2,
+        ));
         assert_eq!(result, Some(4));
     }
 
     #[test]
     fn test_part_two_b() {
-        let result = part_two(&advent_of_code::template::read_file_part("examples", DAY,3));
+        let result = part_two(&advent_of_code::template::read_file_part(
+            "examples", DAY, 3,
+        ));
         assert_eq!(result, Some(8));
     }
 }

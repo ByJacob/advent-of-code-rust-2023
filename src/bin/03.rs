@@ -9,13 +9,13 @@ pub fn part_one(input: &str) -> Option<u32> {
     for idx in 0..(lines.len()) {
         let cur_line = &lines[idx];
         let empty_str = &String::from("");
-        let prev_line = if idx>0 {
-            lines.get(idx-1).unwrap()
+        let prev_line = if idx > 0 {
+            lines.get(idx - 1).unwrap()
         } else {
             &empty_str
         };
-        let next_line = if idx<lines.len()-1 {
-            lines.get(idx+1).unwrap()
+        let next_line = if idx < lines.len() - 1 {
+            lines.get(idx + 1).unwrap()
         } else {
             &empty_str
         };
@@ -25,8 +25,8 @@ pub fn part_one(input: &str) -> Option<u32> {
             let start = m.start();
             let end = m.end();
             let mut have_char = false;
-            let start_search = ((start as i32)-1).max(0) as usize;
-            let end_search = (end+1).min(cur_line.len());
+            let start_search = ((start as i32) - 1).max(0) as usize;
+            let end_search = (end + 1).min(cur_line.len());
             for line in [prev_line, cur_line, next_line] {
                 if line.len() > 0 {
                     for ch in line[start_search..end_search].chars() {
@@ -43,7 +43,6 @@ pub fn part_one(input: &str) -> Option<u32> {
             if have_char {
                 sum += num;
             }
-
         }
     }
     print!("Sum gameID: {}", sum);
@@ -59,13 +58,13 @@ pub fn part_two(input: &str) -> Option<u32> {
     for idx in 0..(lines.len()) {
         let cur_line = &lines[idx];
         let empty_str = &String::from("");
-        let prev_line = if idx>0 {
-            lines.get(idx-1).unwrap()
+        let prev_line = if idx > 0 {
+            lines.get(idx - 1).unwrap()
         } else {
             &empty_str
         };
-        let next_line = if idx<lines.len()-1 {
-            lines.get(idx+1).unwrap()
+        let next_line = if idx < lines.len() - 1 {
+            lines.get(idx + 1).unwrap()
         } else {
             &empty_str
         };
@@ -74,29 +73,28 @@ pub fn part_two(input: &str) -> Option<u32> {
             let num: i32 = m.as_str().parse().expect("Excpect found number");
             let start = m.start();
             let end = m.end();
-            let start_search = ((start as i32)-1).max(0) as usize;
-            let end_search = (end+1).min(cur_line.len());
+            let start_search = ((start as i32) - 1).max(0) as usize;
+            let end_search = (end + 1).min(cur_line.len());
             for (idx_fix, line) in [(-1 as i32, prev_line), (0, cur_line), (1, next_line)] {
                 if line.len() > 0 {
                     for (idx_ch, ch) in line[start_search..end_search].chars().enumerate() {
                         if ch == '*' {
-                            let hash_key = ((idx as i32 + idx_fix) as usize, start_search+idx_ch);
-                            stars.entry(hash_key)
-                                .or_insert(Vec::new()).push(num);
+                            let hash_key = ((idx as i32 + idx_fix) as usize, start_search + idx_ch);
+                            stars.entry(hash_key).or_insert(Vec::new()).push(num);
                         }
                     }
                 }
             }
-
         }
     }
-    let stars_2: HashMap<(usize, usize), Vec<i32>> = stars.iter()
-        .filter(|(_, value)| value.len()==2)
-        .map(|(k,v)| (k.clone(), v.clone()))
+    let stars_2: HashMap<(usize, usize), Vec<i32>> = stars
+        .iter()
+        .filter(|(_, value)| value.len() == 2)
+        .map(|(k, v)| (k.clone(), v.clone()))
         .collect();
-    stars_2.iter().for_each(|(k,v)| {
-        sum += v.get(0).expect("Element1")*v.get(1).expect("Element2")
-    });
+    stars_2
+        .iter()
+        .for_each(|(k, v)| sum += v.get(0).expect("Element1") * v.get(1).expect("Element2"));
     print!("Sum gameID: {}", sum);
     Some(sum as u32)
 }

@@ -8,13 +8,14 @@ trait SplitToVector {
 impl SplitToVector for String {
     fn to_vector(self) -> Vec<i32> {
         let mut result: Vec<i32> = Vec::new();
-        self.split_whitespace().for_each(|number| result.push(number.parse().unwrap()));
+        self.split_whitespace()
+            .for_each(|number| result.push(number.parse().unwrap()));
         result
     }
 }
 pub fn part_one(input: &str) -> Option<u32> {
     let mut sum = 0;
-    input.lines().for_each(|line|{
+    input.lines().for_each(|line| {
         let (card_id, numbers) = line.split_once(":").unwrap();
         let (_, card_id) = card_id.split_once(" ").unwrap();
         let card_id: i32 = card_id.trim().parse().unwrap();
@@ -30,7 +31,7 @@ pub fn part_one(input: &str) -> Option<u32> {
             .collect();
         let mut cur_points = 0;
         (0..common_elements.len()).for_each(|i| {
-            cur_points = if cur_points == 0 {1} else {cur_points*2};
+            cur_points = if cur_points == 0 { 1 } else { cur_points * 2 };
         });
         sum += cur_points;
     });
@@ -41,7 +42,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 
 pub fn part_two(input: &str) -> Option<u32> {
     let mut cards: HashMap<i32, i32> = HashMap::new();
-    input.lines().for_each(|line|{
+    input.lines().for_each(|line| {
         let (card_id, numbers) = line.split_once(":").unwrap();
         let (_, card_id) = card_id.split_once(" ").unwrap();
         let card_id: i32 = card_id.trim().parse().unwrap();
@@ -59,7 +60,8 @@ pub fn part_two(input: &str) -> Option<u32> {
         let multiplex = *cards.get(&card_id).unwrap();
         // println!("{:?}", multiplex);
         (0..common_elements.len()).for_each(|i| {
-            cards.entry(card_id+1+(i as i32))
+            cards
+                .entry(card_id + 1 + (i as i32))
                 .and_modify(|v| *v += multiplex)
                 .or_insert(multiplex);
         });

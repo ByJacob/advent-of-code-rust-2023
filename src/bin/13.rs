@@ -5,7 +5,7 @@ pub fn part_one(input: &str) -> Option<u32> {
     let mut curr_map: Vec<String> = vec![];
 
     for line in input.lines() {
-        if line.len()<=0 {
+        if line.len() <= 0 {
             maps.push(curr_map.clone());
             curr_map = vec![];
         } else {
@@ -19,18 +19,18 @@ pub fn part_one(input: &str) -> Option<u32> {
         for multiple in vec![100, 1] {
             let mut row_mirror_id = 0;
             for row_id in 0..map.len() {
-                if row_id >= map.len()-1 {
+                if row_id >= map.len() - 1 {
                     continue;
                 }
                 let mut curr_dif: usize = 0;
                 let mut is_mirror = true;
                 loop {
                     let elem1 = if row_id as i32 - curr_dif as i32 >= 0 {
-                        map.get(row_id-curr_dif)
+                        map.get(row_id - curr_dif)
                     } else {
                         None
                     };
-                    let elem2 =  map.get(row_id+1+curr_dif);
+                    let elem2 = map.get(row_id + 1 + curr_dif);
                     match (elem1, elem2) {
                         (Some(elem_prev), Some(elem_next)) => {
                             for (char1, char2) in elem_prev.chars().zip(elem_next.chars()) {
@@ -41,14 +41,15 @@ pub fn part_one(input: &str) -> Option<u32> {
                             }
                             curr_dif += 1
                         }
-                        _ => { break; }
+                        _ => {
+                            break;
+                        }
                     }
                 }
                 if is_mirror {
-                    row_mirror_id = row_id+1;
-                    sum += row_mirror_id*multiple
+                    row_mirror_id = row_id + 1;
+                    sum += row_mirror_id * multiple
                 }
-
             }
             let mut new_map: Vec<String> = vec![];
             for col_id in 0..map.get(0).unwrap().len() {
@@ -72,7 +73,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     let mut curr_map: Vec<String> = vec![];
 
     for line in input.lines() {
-        if line.len()<=0 {
+        if line.len() <= 0 {
             maps.push(curr_map.clone());
             curr_map = vec![];
         } else {
@@ -86,7 +87,7 @@ pub fn part_two(input: &str) -> Option<u32> {
         for multiple in vec![100, 1] {
             let mut row_mirror_id = 0;
             for row_id in 0..map.len() {
-                if row_id >= map.len()-1 {
+                if row_id >= map.len() - 1 {
                     continue;
                 }
                 let mut curr_dif: usize = 0;
@@ -94,11 +95,11 @@ pub fn part_two(input: &str) -> Option<u32> {
                 let mut broken_elements = 0;
                 loop {
                     let elem1 = if row_id as i32 - curr_dif as i32 >= 0 {
-                        map.get(row_id-curr_dif)
+                        map.get(row_id - curr_dif)
                     } else {
                         None
                     };
-                    let elem2 =  map.get(row_id+1+curr_dif);
+                    let elem2 = map.get(row_id + 1 + curr_dif);
                     match (elem1, elem2) {
                         (Some(elem_prev), Some(elem_next)) => {
                             for (char1, char2) in elem_prev.chars().zip(elem_next.chars()) {
@@ -108,14 +109,15 @@ pub fn part_two(input: &str) -> Option<u32> {
                             }
                             curr_dif += 1
                         }
-                        _ => { break; }
+                        _ => {
+                            break;
+                        }
                     }
                 }
                 if broken_elements == 1 {
-                    row_mirror_id = row_id+1;
-                    sum += row_mirror_id*multiple
+                    row_mirror_id = row_id + 1;
+                    sum += row_mirror_id * multiple
                 }
-
             }
             let mut new_map: Vec<String> = vec![];
             for col_id in 0..map.get(0).unwrap().len() {

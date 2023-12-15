@@ -4,20 +4,26 @@ use std::str::FromStr;
 advent_of_code::solution!(5);
 
 trait SplitToVector<T: FromStr> {
-    fn to_vector(self) -> Vec<T> where <T as FromStr>::Err: Debug;
+    fn to_vector(self) -> Vec<T>
+    where
+        <T as FromStr>::Err: Debug;
 }
 
 impl<T: FromStr> SplitToVector<T> for String {
-    fn to_vector(self) -> Vec<T> where <T as FromStr>::Err: Debug {
+    fn to_vector(self) -> Vec<T>
+    where
+        <T as FromStr>::Err: Debug,
+    {
         let mut result: Vec<T> = Vec::new();
-        self.split_whitespace().for_each(|number| result.push(number.parse().unwrap()));
+        self.split_whitespace()
+            .for_each(|number| result.push(number.parse().unwrap()));
         result
     }
 }
 
 pub fn find_min_hashmap_by_value<T: Ord + Copy>(
     vec_of_hashmaps: &Vec<HashMap<String, T>>,
-    key_to_find: &String
+    key_to_find: &String,
 ) -> Option<HashMap<String, T>> {
     // Ensure the vector is not empty
     if vec_of_hashmaps.is_empty() {
@@ -48,7 +54,8 @@ pub fn part_one(input: &str) -> Option<u32> {
             seeds = String::from(part2).to_vector();
         } else if line.len() > 0 {
             if line.contains(":") {
-                curr_key = line.split_once(" ")
+                curr_key = line
+                    .split_once(" ")
                     .map(|(s1, s2)| String::from(s1))
                     .unwrap();
                 maps.entry(curr_key.clone()).or_insert(HashMap::new());
@@ -58,8 +65,10 @@ pub fn part_one(input: &str) -> Option<u32> {
                 let right_start: &i64 = num.get(0).unwrap();
                 let left_start: &i64 = num.get(1).unwrap();
                 let range = *num.get(2).unwrap() - 1;
-                let mut curr_map: &mut HashMap<(i64, i64), (i64, i64)> = maps.get_mut(&curr_key).unwrap();
-                curr_map.entry((*left_start, *left_start + range))
+                let mut curr_map: &mut HashMap<(i64, i64), (i64, i64)> =
+                    maps.get_mut(&curr_key).unwrap();
+                curr_map
+                    .entry((*left_start, *left_start + range))
                     .or_insert((*right_start, *right_start + range));
             }
         }
@@ -77,7 +86,8 @@ pub fn part_one(input: &str) -> Option<u32> {
                     curr_value = Some(to.0 + curr_num_idx);
                 }
             }
-            if let Some(value) = curr_value {} else {
+            if let Some(value) = curr_value {
+            } else {
                 curr_value = Some(curr_num);
             }
             seed_map.insert(String::from(map), curr_value.unwrap());
@@ -85,14 +95,15 @@ pub fn part_one(input: &str) -> Option<u32> {
         }
         result.push(seed_map);
     }
-    let min_seed = find_min_hashmap_by_value(
-        &result,
-        &String::from("humidity-to-location"),
-    ).unwrap();
+    let min_seed =
+        find_min_hashmap_by_value(&result, &String::from("humidity-to-location")).unwrap();
     // println!("{:?}", maps);
     // println!("{:?}", result);
 
-    print!("Min location: {}", min_seed.get(&String::from("humidity-to-location")).unwrap());
+    print!(
+        "Min location: {}",
+        min_seed.get(&String::from("humidity-to-location")).unwrap()
+    );
     Some(*min_seed.get(&String::from("humidity-to-location")).unwrap() as u32)
 }
 
@@ -110,7 +121,8 @@ pub fn part_two(input: &str) -> Option<u32> {
             }
         } else if line.len() > 0 {
             if line.contains(":") {
-                curr_key = line.split_once(" ")
+                curr_key = line
+                    .split_once(" ")
                     .map(|(s1, s2)| String::from(s1))
                     .unwrap();
                 maps.entry(curr_key.clone()).or_insert(HashMap::new());
@@ -120,8 +132,10 @@ pub fn part_two(input: &str) -> Option<u32> {
                 let right_start: &i64 = num.get(0).unwrap();
                 let left_start: &i64 = num.get(1).unwrap();
                 let range = *num.get(2).unwrap() - 1;
-                let mut curr_map: &mut HashMap<(i64, i64), (i64, i64)> = maps.get_mut(&curr_key).unwrap();
-                curr_map.entry((*left_start, *left_start + range))
+                let mut curr_map: &mut HashMap<(i64, i64), (i64, i64)> =
+                    maps.get_mut(&curr_key).unwrap();
+                curr_map
+                    .entry((*left_start, *left_start + range))
                     .or_insert((*right_start, *right_start + range));
             }
         }
@@ -171,11 +185,15 @@ pub fn part_two(input: &str) -> Option<u32> {
             let mut not_found_group = group.clone();
             for founded_group in founded_groups.iter() {
                 if not_found_group.0 >= founded_group.0 && not_found_group.1 <= founded_group.1 {
-                    not_found_group = (0,0);
-                } else if not_found_group.0 >= founded_group.0 && not_found_group.0 <= founded_group.1 {
-                    not_found_group = (founded_group.1+1,not_found_group.1);
-                } else if not_found_group.1 <= founded_group.1 && not_found_group.1 >= founded_group.0 {
-                    not_found_group = (not_found_group.0,founded_group.0-1);
+                    not_found_group = (0, 0);
+                } else if not_found_group.0 >= founded_group.0
+                    && not_found_group.0 <= founded_group.1
+                {
+                    not_found_group = (founded_group.1 + 1, not_found_group.1);
+                } else if not_found_group.1 <= founded_group.1
+                    && not_found_group.1 >= founded_group.0
+                {
+                    not_found_group = (not_found_group.0, founded_group.0 - 1);
                 }
             }
             if not_found_group.0 < not_found_group.1 {
@@ -193,8 +211,13 @@ pub fn part_two(input: &str) -> Option<u32> {
         groups.insert(String::from(map), new_groups.clone());
         curr_groups = new_groups.clone();
     }
-    let location = groups.get("humidity-to-location").unwrap()
-        .iter().map(|v| v.0).min().unwrap();
+    let location = groups
+        .get("humidity-to-location")
+        .unwrap()
+        .iter()
+        .map(|v| v.0)
+        .min()
+        .unwrap();
     // println!("{:?}", maps);
     // println!("{:?}", groups);
     print!("Min location: {}", location);

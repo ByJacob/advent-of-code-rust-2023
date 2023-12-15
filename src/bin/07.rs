@@ -4,42 +4,44 @@ use std::str::FromStr;
 advent_of_code::solution!(7);
 
 trait SplitToVector<T: FromStr> {
-    fn to_vector(self) -> Vec<T> where <T as FromStr>::Err: Debug;
+    fn to_vector(self) -> Vec<T>
+    where
+        <T as FromStr>::Err: Debug;
 }
 
 fn get_card_order() -> HashMap<String, i32> {
     let mut result: HashMap<String, i32> = HashMap::new();
-    result.insert(String::from("2"),1);
-    result.insert(String::from("3"),2);
-    result.insert(String::from("4"),3);
-    result.insert(String::from("5"),4);
-    result.insert(String::from("6"),5);
-    result.insert(String::from("7"),6);
-    result.insert(String::from("8"),7);
-    result.insert(String::from("9"),8);
-    result.insert(String::from("T"),9);
-    result.insert(String::from("J"),10);
-    result.insert(String::from("Q"),11);
-    result.insert(String::from("K"),12);
-    result.insert(String::from("A"),13);
+    result.insert(String::from("2"), 1);
+    result.insert(String::from("3"), 2);
+    result.insert(String::from("4"), 3);
+    result.insert(String::from("5"), 4);
+    result.insert(String::from("6"), 5);
+    result.insert(String::from("7"), 6);
+    result.insert(String::from("8"), 7);
+    result.insert(String::from("9"), 8);
+    result.insert(String::from("T"), 9);
+    result.insert(String::from("J"), 10);
+    result.insert(String::from("Q"), 11);
+    result.insert(String::from("K"), 12);
+    result.insert(String::from("A"), 13);
     result
 }
 
 fn get_card_order2() -> HashMap<String, i32> {
     let mut result: HashMap<String, i32> = HashMap::new();
-    result.insert(String::from("2"),1);
-    result.insert(String::from("3"),2);
-    result.insert(String::from("4"),3);
-    result.insert(String::from("5"),4);
-    result.insert(String::from("6"),5);
-    result.insert(String::from("7"),6);
-    result.insert(String::from("8"),7);
-    result.insert(String::from("9"),8);
-    result.insert(String::from("T"),9);
-    result.insert(String::from("J"),0);
-    result.insert(String::from("Q"),11);
-    result.insert(String::from("K"),12);
-    result.insert(String::from("A"),13);
+    result.insert(String::from("2"), 1);
+    result.insert(String::from("3"), 2);
+    result.insert(String::from("4"), 3);
+    result.insert(String::from("5"), 4);
+    result.insert(String::from("6"), 5);
+    result.insert(String::from("7"), 6);
+    result.insert(String::from("8"), 7);
+    result.insert(String::from("9"), 8);
+    result.insert(String::from("T"), 9);
+    result.insert(String::from("J"), 0);
+    result.insert(String::from("Q"), 11);
+    result.insert(String::from("K"), 12);
+    result.insert(String::from("A"), 13);
     result
 }
 
@@ -50,7 +52,7 @@ enum HandType {
     ThreeOfKind,
     TwoPair,
     OnePair,
-    HighCard
+    HighCard,
 }
 
 impl HandType {
@@ -62,7 +64,7 @@ impl HandType {
             HandType::ThreeOfKind => 4,
             HandType::TwoPair => 3,
             HandType::OnePair => 2,
-            HandType::HighCard => 1
+            HandType::HighCard => 1,
         }
     }
     pub fn name(&self) -> String {
@@ -73,7 +75,7 @@ impl HandType {
             HandType::ThreeOfKind => String::from("ThreeOfKind"),
             HandType::TwoPair => String::from("TwoPair"),
             HandType::OnePair => String::from("OnePair"),
-            HandType::HighCard => String::from("HighCard")
+            HandType::HighCard => String::from("HighCard"),
         }
     }
 }
@@ -88,29 +90,40 @@ struct Hand {
 impl Debug for Hand {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         // implement the formatting here
-        write!(f, "Hand cards={}; bid={}; hand_type={}; rank={}\n", self.cards, self.bid, self.hand_type.name(), self.rank)
+        write!(
+            f,
+            "Hand cards={}; bid={}; hand_type={}; rank={}\n",
+            self.cards,
+            self.bid,
+            self.hand_type.name(),
+            self.rank
+        )
     }
 }
 
 impl Hand {
     fn determine_hand_type(&mut self) {
         let mut uniq_count: HashMap<char, i32> = HashMap::new();
-        self.cards.chars().into_iter()
-            .map(|label| (label, self.cards.chars().filter(|&c| c==label).count()))
-            .for_each(|(ch, cou)| {uniq_count.insert(ch, cou as i32);});
+        self.cards
+            .chars()
+            .into_iter()
+            .map(|label| (label, self.cards.chars().filter(|&c| c == label).count()))
+            .for_each(|(ch, cou)| {
+                uniq_count.insert(ch, cou as i32);
+            });
 
         match uniq_count.values().max() {
             Some(5) => self.hand_type = HandType::FiveOfKind,
             Some(4) => self.hand_type = HandType::FourOfKind,
             Some(3) => {
-                if uniq_count.values().any(|f| f==&2) {
+                if uniq_count.values().any(|f| f == &2) {
                     self.hand_type = HandType::FullHouse
                 } else {
                     self.hand_type = HandType::ThreeOfKind
                 }
             }
             Some(2) => {
-                if uniq_count.values().filter(|&p| p==&2).count() >= 2 {
+                if uniq_count.values().filter(|&p| p == &2).count() >= 2 {
                     self.hand_type = HandType::TwoPair
                 } else {
                     self.hand_type = HandType::OnePair
@@ -140,7 +153,13 @@ impl Hand {
             for i in 0..=max_value {
                 let mut new_combination = current.clone();
                 new_combination.push(i);
-                generate_recursive(new_combination, remaining_depth - 1, target_sum, max_value, combinations);
+                generate_recursive(
+                    new_combination,
+                    remaining_depth - 1,
+                    target_sum,
+                    max_value,
+                    combinations,
+                );
             }
         }
 
@@ -152,9 +171,13 @@ impl Hand {
         let unique_labels: HashSet<char> = self.cards.chars().collect();
         let count_j = self.cards.chars().filter(|&c| c == 'J').count();
         let mut uniq_count: HashMap<char, i32> = HashMap::new();
-        self.cards.chars().into_iter()
-            .map(|label| (label, self.cards.chars().filter(|&c| c==label).count()))
-            .for_each(|(ch, cou)| {uniq_count.insert(ch, cou as i32);});
+        self.cards
+            .chars()
+            .into_iter()
+            .map(|label| (label, self.cards.chars().filter(|&c| c == label).count()))
+            .for_each(|(ch, cou)| {
+                uniq_count.insert(ch, cou as i32);
+            });
         let mut uniq_counts: Vec<HashMap<char, i32>> = Vec::new();
         uniq_counts.push(uniq_count.clone());
 
@@ -165,12 +188,13 @@ impl Hand {
             let depth = uniq_count.len(); // Change this value to set the depth of the combinations
             let combinations = Hand::generate_combinations(max_value, target_sum, depth);
             let keys: Vec<char> = uniq_count.keys().map(|k| *k).collect();
-            combinations.iter().for_each(|c|{
+            combinations.iter().for_each(|c| {
                 let mut tmp_uniq_count = uniq_count.clone();
                 for idx in 0..keys.len() {
-                    *(tmp_uniq_count.get_mut(keys.get(idx).unwrap()).unwrap()) += c.get(idx).unwrap();
+                    *(tmp_uniq_count.get_mut(keys.get(idx).unwrap()).unwrap()) +=
+                        c.get(idx).unwrap();
                 }
-                tmp_uniq_count.insert('J', (count_j as i32)-c.iter().sum::<i32>());
+                tmp_uniq_count.insert('J', (count_j as i32) - c.iter().sum::<i32>());
                 uniq_counts.push(tmp_uniq_count.clone());
             });
         }
@@ -180,14 +204,14 @@ impl Hand {
                 Some(5) => HandType::FiveOfKind,
                 Some(4) => HandType::FourOfKind,
                 Some(3) => {
-                    if uniq_count.values().any(|f| f==&2) {
+                    if uniq_count.values().any(|f| f == &2) {
                         HandType::FullHouse
                     } else {
                         HandType::ThreeOfKind
                     }
                 }
                 Some(2) => {
-                    if uniq_count.values().filter(|&p| p==&2).count() >= 2 {
+                    if uniq_count.values().filter(|&p| p == &2).count() >= 2 {
                         HandType::TwoPair
                     } else {
                         HandType::OnePair
@@ -195,7 +219,7 @@ impl Hand {
                 }
                 _ => HandType::HighCard,
             };
-            if curr_value.value()> max_value.value() {
+            if curr_value.value() > max_value.value() {
                 max_value = curr_value
             }
         }
@@ -204,11 +228,17 @@ impl Hand {
     }
 
     pub fn calc_rank(&self, card_order: &HashMap<String, i32>) -> i32 {
-        let base:i32 = 20;
-        let res = (self.hand_type.value() as i32)*base.pow(5)
-            + self.cards.chars().rev().enumerate()
-            .map(|(idx, c)| (card_order.get(&String::from(c)).unwrap())*(base.pow(idx as u32)))
-            .sum::<i32>();
+        let base: i32 = 20;
+        let res = (self.hand_type.value() as i32) * base.pow(5)
+            + self
+                .cards
+                .chars()
+                .rev()
+                .enumerate()
+                .map(|(idx, c)| {
+                    (card_order.get(&String::from(c)).unwrap()) * (base.pow(idx as u32))
+                })
+                .sum::<i32>();
         let test123 = res.clone();
         res
     }
@@ -217,8 +247,10 @@ pub fn part_one(input: &str) -> Option<u32> {
     let mut hands: Vec<Hand> = Vec::new();
 
     for line in input.lines() {
-        let (card, bid) = line.split_once(" ")
-            .map(|(c,b)| (String::from(c), b.parse::<i32>().unwrap())).unwrap();
+        let (card, bid) = line
+            .split_once(" ")
+            .map(|(c, b)| (String::from(c), b.parse::<i32>().unwrap()))
+            .unwrap();
         let card = String::from(card);
         let mut hand = Hand {
             cards: card,
@@ -228,17 +260,16 @@ pub fn part_one(input: &str) -> Option<u32> {
         };
         hand.determine_hand_type();
         hands.push(hand);
-
     }
 
     let card_order = get_card_order();
     hands.sort_by_key(|h| h.calc_rank(&card_order));
 
     for idx in 0..hands.len() {
-        hands.get_mut(idx).unwrap().rank = (idx+1) as i32
+        hands.get_mut(idx).unwrap().rank = (idx + 1) as i32
     }
     let mut sum = 0;
-    hands.iter().for_each(|h| sum += h.bid*(h.rank as i32));
+    hands.iter().for_each(|h| sum += h.bid * (h.rank as i32));
     println!("{:?}", hands);
     println!("{:?}", sum);
     Some(sum as u32)
@@ -248,8 +279,10 @@ pub fn part_two(input: &str) -> Option<u32> {
     let mut hands: Vec<Hand> = Vec::new();
 
     for line in input.lines() {
-        let (card, bid) = line.split_once(" ")
-            .map(|(c,b)| (String::from(c), b.parse::<i32>().unwrap())).unwrap();
+        let (card, bid) = line
+            .split_once(" ")
+            .map(|(c, b)| (String::from(c), b.parse::<i32>().unwrap()))
+            .unwrap();
         let card = String::from(card);
         let mut hand = Hand {
             cards: card,
@@ -259,17 +292,16 @@ pub fn part_two(input: &str) -> Option<u32> {
         };
         hand.determine_hand_type_with_joker(true);
         hands.push(hand);
-
     }
 
     let card_order = get_card_order2();
     hands.sort_by_key(|h| h.calc_rank(&card_order));
 
     for idx in 0..hands.len() {
-        hands.get_mut(idx).unwrap().rank = (idx+1) as i32
+        hands.get_mut(idx).unwrap().rank = (idx + 1) as i32
     }
     let mut sum = 0;
-    hands.iter().for_each(|h| sum += h.bid*(h.rank as i32));
+    hands.iter().for_each(|h| sum += h.bid * (h.rank as i32));
     // println!("{:?}", hands);
     println!("{:?}", sum);
     Some(sum as u32)
