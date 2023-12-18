@@ -29,6 +29,7 @@ I started learning this language on Day 1 of AoC
 | [Day 14](https://adventofcode.com/2023/day/14) | ⭐ | ⭐ |
 | [Day 15](https://adventofcode.com/2023/day/15) | ⭐ | ⭐ |
 | [Day 16](https://adventofcode.com/2023/day/16) | ⭐ | ⭐ |
+| [Day 17](https://adventofcode.com/2023/day/17) | ⭐ | ⭐ |
 <!--- advent_readme_stars table --->
 
 <!--- benchmarking table --->
