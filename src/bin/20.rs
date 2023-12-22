@@ -1,13 +1,13 @@
+use log::log;
 use std::collections::HashMap;
 use std::process::id;
-use log::log;
 advent_of_code::solution!(20);
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 enum ModulesType {
     FlipFlop,
     Conjunction,
-    Broadcast
+    Broadcast,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone)]
@@ -17,7 +17,7 @@ struct Module {
     dest: Vec<String>,
     state: bool,
     inputs: Vec<String>,
-    input_states: HashMap<String, bool>
+    input_states: HashMap<String, bool>,
 }
 
 impl Module {
@@ -60,41 +60,49 @@ impl Module {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-
     let mut modules: HashMap<String, Module> = HashMap::new();
 
     for line in input.lines() {
         let (name, dest) = line.split_once("->").unwrap();
         let dest: Vec<String> = dest.split(",").map(|p| String::from(p.trim())).collect();
         if name.contains("broadcaster") {
-            modules.insert(String::from("broadcaster"), Module{
-                name: String::from("broadcaster"),
-                type_: ModulesType::Broadcast,
-                dest,
-                state: false,
-                inputs: vec![],
-                input_states: HashMap::new(),
-            });
+            modules.insert(
+                String::from("broadcaster"),
+                Module {
+                    name: String::from("broadcaster"),
+                    type_: ModulesType::Broadcast,
+                    dest,
+                    state: false,
+                    inputs: vec![],
+                    input_states: HashMap::new(),
+                },
+            );
         } else if name.contains("%") {
             let name = name[1..].trim();
-            modules.insert(String::from(name), Module{
-                name: String::from(name),
-                type_: ModulesType::FlipFlop,
-                dest,
-                state: false,
-                inputs: vec![],
-                input_states: HashMap::new(),
-            });
+            modules.insert(
+                String::from(name),
+                Module {
+                    name: String::from(name),
+                    type_: ModulesType::FlipFlop,
+                    dest,
+                    state: false,
+                    inputs: vec![],
+                    input_states: HashMap::new(),
+                },
+            );
         } else {
             let name = name[1..].trim();
-            modules.insert(String::from(name), Module {
-                name: String::from(name),
-                type_: ModulesType::Conjunction,
-                dest,
-                state: false,
-                inputs: vec![],
-                input_states: HashMap::new(),
-            });
+            modules.insert(
+                String::from(name),
+                Module {
+                    name: String::from(name),
+                    type_: ModulesType::Conjunction,
+                    dest,
+                    state: false,
+                    inputs: vec![],
+                    input_states: HashMap::new(),
+                },
+            );
         }
     }
 
@@ -115,7 +123,10 @@ pub fn part_one(input: &str) -> Option<u32> {
         *signals_count.get_mut(&false).unwrap() += 1;
         loop {
             if let Some((module_name, signal)) = signals.pop() {
-                let mut curr_module = modules.get_mut(&module_name).expect("Missing module").clone();
+                let mut curr_module = modules
+                    .get_mut(&module_name)
+                    .expect("Missing module")
+                    .clone();
                 if let Some(output) = curr_module.get_output(signal) {
                     for dest in &curr_module.dest {
                         *signals_count.get_mut(&output).unwrap() += 1;
@@ -182,34 +193,43 @@ pub fn part_two(input: &str) -> Option<u64> {
         let (name, dest) = line.split_once("->").unwrap();
         let dest: Vec<String> = dest.split(",").map(|p| String::from(p.trim())).collect();
         if name.contains("broadcaster") {
-            modules.insert(String::from("broadcaster"), Module{
-                name: String::from("broadcaster"),
-                type_: ModulesType::Broadcast,
-                dest,
-                state: false,
-                inputs: vec![],
-                input_states: HashMap::new(),
-            });
+            modules.insert(
+                String::from("broadcaster"),
+                Module {
+                    name: String::from("broadcaster"),
+                    type_: ModulesType::Broadcast,
+                    dest,
+                    state: false,
+                    inputs: vec![],
+                    input_states: HashMap::new(),
+                },
+            );
         } else if name.contains("%") {
             let name = name[1..].trim();
-            modules.insert(String::from(name), Module{
-                name: String::from(name),
-                type_: ModulesType::FlipFlop,
-                dest,
-                state: false,
-                inputs: vec![],
-                input_states: HashMap::new(),
-            });
+            modules.insert(
+                String::from(name),
+                Module {
+                    name: String::from(name),
+                    type_: ModulesType::FlipFlop,
+                    dest,
+                    state: false,
+                    inputs: vec![],
+                    input_states: HashMap::new(),
+                },
+            );
         } else {
             let name = name[1..].trim();
-            modules.insert(String::from(name), Module {
-                name: String::from(name),
-                type_: ModulesType::Conjunction,
-                dest,
-                state: false,
-                inputs: vec![],
-                input_states: HashMap::new(),
-            });
+            modules.insert(
+                String::from(name),
+                Module {
+                    name: String::from(name),
+                    type_: ModulesType::Conjunction,
+                    dest,
+                    state: false,
+                    inputs: vec![],
+                    input_states: HashMap::new(),
+                },
+            );
         }
     }
 
@@ -222,8 +242,11 @@ pub fn part_two(input: &str) -> Option<u64> {
     }
 
     //vec![String::from("rx")];
-    let mut find_parts: Vec<String> = modules.iter().filter(|(_,&ref m)| m.dest.contains(&String::from("rx")))
-        .map(|(_, &ref m)| String::from(&m.name)).collect();
+    let mut find_parts: Vec<String> = modules
+        .iter()
+        .filter(|(_, &ref m)| m.dest.contains(&String::from("rx")))
+        .map(|(_, &ref m)| String::from(&m.name))
+        .collect();
 
     let mut result_signal = false;
 
@@ -247,8 +270,14 @@ pub fn part_two(input: &str) -> Option<u64> {
         if !should_continue {
             break;
         }
-        if new_find_modules.iter().all(|m| m.type_ == ModulesType::Conjunction) {
-            find_parts = new_find_modules.iter().map(|m| String::from(&m.name)).collect();
+        if new_find_modules
+            .iter()
+            .all(|m| m.type_ == ModulesType::Conjunction)
+        {
+            find_parts = new_find_modules
+                .iter()
+                .map(|m| String::from(&m.name))
+                .collect();
             result_signal = !result_signal;
         } else {
             break;
@@ -268,11 +297,16 @@ pub fn part_two(input: &str) -> Option<u64> {
         *signals_count.get_mut(&false).unwrap() += 1;
         loop {
             if let Some((module_name, signal)) = signals.pop() {
-                let mut curr_module = modules.get_mut(&module_name).expect("Missing module").clone();
+                let mut curr_module = modules
+                    .get_mut(&module_name)
+                    .expect("Missing module")
+                    .clone();
                 if let Some(output) = curr_module.get_output(signal) {
                     if find_parts.contains(&curr_module.name) && output == result_signal {
-                        println!("{}",curr_module.name.to_string());
-                        result_count.entry(curr_module.name.to_string()).or_insert(idx);
+                        println!("{}", curr_module.name.to_string());
+                        result_count
+                            .entry(curr_module.name.to_string())
+                            .or_insert(idx);
                     }
                     if find_parts.len() == result_count.len() {
                         find_rx = true;
@@ -295,7 +329,11 @@ pub fn part_two(input: &str) -> Option<u64> {
             break;
         }
     }
-    let values: Vec<u64> = result_count.values().into_iter().map(|v| *v as u64).collect();
+    let values: Vec<u64> = result_count
+        .values()
+        .into_iter()
+        .map(|v| *v as u64)
+        .collect();
     let result = calculate_lcm(values);
     println!("{}", result);
     // println!("{:?}", signals_count);
@@ -309,13 +347,17 @@ mod tests {
 
     #[test]
     fn test_part_one_a() {
-        let result = part_one(&advent_of_code::template::read_file_part("examples", DAY, 1));
+        let result = part_one(&advent_of_code::template::read_file_part(
+            "examples", DAY, 1,
+        ));
         assert_eq!(result, Some(32000000));
     }
 
     #[test]
     fn test_part_one_b() {
-        let result = part_one(&advent_of_code::template::read_file_part("examples", DAY, 2));
+        let result = part_one(&advent_of_code::template::read_file_part(
+            "examples", DAY, 2,
+        ));
         assert_eq!(result, Some(11687500));
     }
 
